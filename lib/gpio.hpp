@@ -123,6 +123,7 @@ namespace  tfs {
         bool setStatus( STATUS status );
         
         bool write( const char *path, const std::string &message );
+        bool read(  const char *path, std::string &value );
         bool read(  const char *path, bool &value );
         
         bool writeExport( void );

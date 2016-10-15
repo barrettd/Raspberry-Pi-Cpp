@@ -78,6 +78,24 @@ namespace  tfs {
     }
     
     bool
+    Gpio::read( const char *path, std::string &value ) {
+        if( path == 0 || *path == 0 ) {
+            return setStatus( STATUS_INTERNAL_BAD_ARG );
+        }
+        std::ifstream stream( path );
+        if( !stream ) {
+            return setStatus( STATUS_ERROR_FILE_OPEN );
+        }
+        bool result = setStatus( STATUS_OK );
+        stream >> value;
+        if( stream.bad()) {
+            result = setStatus( STATUS_ERROR_FILE_READ );
+        }
+        stream.close();
+        return result;              // Important to check read status.
+    }
+    
+    bool
     Gpio::read( const char *path, bool &value ) {
         if( path == 0 || *path == 0 ) {
             return setStatus( STATUS_INTERNAL_BAD_ARG );
@@ -95,6 +113,7 @@ namespace  tfs {
         value = val == '1';         // We expect '1' or '0'
         return result;              // Important to check read status.
     }
+
     
     bool
     Gpio::writeExport( void ) {
@@ -125,18 +144,25 @@ namespace  tfs {
     
     bool
     Gpio::readDirction( bool &input ) {
-        return true;
+        std::string contents;
+        std::stringstream path;
+        path << "/sys/class/gpio/gpio" << m_id << "/direction";
+        if( !read( path.str().c_str(), contents )) {
+            return false;
+        }
+        if( contents.empty()) {
+            return setStatus( STATUS_ERROR_FILE_READ );
+        }
+        input = contents.compare( "in" ) == 0;
+        return setStatus( STATUS_OK );
     }
     
     bool
     Gpio::writeValue( bool value ) {
-        std::string message;
         if( value ) {
-            message = "1";
-        } else {
-            message = "0";
+            return write( m_value_path.c_str(), "1" );
         }
-        return write( m_value_path.c_str(), message );
+        return write( m_value_path.c_str(), "0" );
     }
     
     bool
