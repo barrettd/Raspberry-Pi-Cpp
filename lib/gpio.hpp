@@ -11,6 +11,8 @@
 namespace  tfs {
     
     class Gpio {
+    public:
+        Gpio( int number );     // Logical GPIO Number, not connector pin number.
         
     };
 }

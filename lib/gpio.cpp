@@ -7,3 +7,12 @@
 //
 
 #include "gpio.hpp"
+
+
+namespace  tfs {
+    static const char *filePath = "/sys/class/gpio/export";
+    
+    class Gpio {
+        
+    };
+}
