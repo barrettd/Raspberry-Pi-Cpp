@@ -18,10 +18,49 @@
 namespace  tfs {
     static const char *filePath = "/sys/class/gpio/export";
     
-    Gpio::Gpio( int number ) {
+#pragma mark - GPIO Base class
+    
+    Gpio::Gpio( GPIO_ID id ):
+    m_id( id ),
+    m_resistor( RESISTOR_NONE ) {
     }
     
     Gpio::~Gpio( void ) {
+    }
+    
+    bool
+    Gpio::setResistor( RESISTOR value ) {
+        m_resistor = value;
+        return true;
+    }
+    
+    RESISTOR
+    Gpio::getResistor( void ) {
+        return m_resistor;
+    }
+    
+    
+#pragma mark - GPIO Input class
+    
+    GpioInput::GpioInput( GPIO_ID id ):
+    Gpio( id ) {
+    }
+    
+    bool
+    GpioInput::read( void ) {
+        return true;
+    }
+
+    
+#pragma mark - GPIO Output class
+    
+    GpioOutput::GpioOutput( GPIO_ID id ):
+    Gpio( id ) {
+    }
+    
+    bool
+    GpioOutput::write( bool value ) {
+        return true;
     }
     
 }   // namespace tfs
