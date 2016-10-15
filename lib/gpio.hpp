@@ -13,6 +13,8 @@
 #ifndef gpio_hpp
 #define gpio_hpp
 
+#include <string>
+
 namespace  tfs {
     
     // Pull up, pull down resisters
@@ -103,16 +105,44 @@ namespace  tfs {
         RESISTOR_PULL_DOWN
     };
     
+    enum STATUS {
+        STATUS_OK = 0,
+        STATUS_INTERNAL_BAD_ARG,
+        STATUS_ERROR_FILE_OPEN,
+        STATUS_ERROR_FILE_WRITE,
+        STATUS_ERROR_FILE_READ,
+    };
+    
     class Gpio {
     protected:
-        GPIO_ID  m_id;
-        RESISTOR m_resistor;
+        GPIO_ID     m_id;
+        STATUS      m_status;
+        std::string m_value_path;
+        
+    protected:
+        bool setStatus( STATUS status );
+        
+        bool write( const char *path, const std::string &message );
+        bool read(  const char *path, bool &value );
+        
+        bool writeExport( void );
+        bool writeUnexport( void );
+        
+        bool writeDirection( bool input );      // true (1) for input, false (0) for output
+        bool readDirction(  bool &input );
+        
+        bool writeValue( bool value );
+        bool readValue( bool &value );
+        
     public:
                  Gpio( GPIO_ID id );
         virtual ~Gpio( void );
         
         bool     setResistor( RESISTOR value );
         RESISTOR getResistor( void );
+        
+        STATUS clearStatus( void );
+        STATUS getStatus( void ) const;
 
     };
     
@@ -120,7 +150,7 @@ namespace  tfs {
     public:
         GpioInput( GPIO_ID id );
         
-        bool read( void );
+        bool read( bool &value );
         
     };
     
