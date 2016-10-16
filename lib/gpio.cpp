@@ -18,7 +18,9 @@
 
 namespace  tfs {
    
+// ---------------------------------------------------------------------------
 // #pragma mark - GPIO Base class
+// ---------------------------------------------------------------------------
     
     Gpio::Gpio( GPIO_ID id ):
     m_id( id ),
@@ -241,8 +243,10 @@ namespace  tfs {
     }
 
     
+// ---------------------------------------------------------------------------
 // #pragma mark - GPIO Input class
-    
+// ---------------------------------------------------------------------------
+
     GpioInput::GpioInput( GPIO_ID id ):
     Gpio( id ) {
         writeDirection( true );     // true (1) == input
@@ -258,8 +262,10 @@ namespace  tfs {
     }
 
     
+// ---------------------------------------------------------------------------
 // #pragma mark - GPIO Output class
-    
+// ---------------------------------------------------------------------------
+
     GpioOutput::GpioOutput( GPIO_ID id ):
     Gpio( id ) {
         writeDirection( false );    // false (0) == output
