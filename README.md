@@ -1,5 +1,5 @@
 # Raspberry-Pi-Cpp
-pi_lib version 0.01 - Under initial development. Do not use yet.
+pi_lib version 1.00 - Initial release.  16 Oct 2016
 
 pi_lib is a little C++ library for the Raspberry Pi running Debian Raspbian Jessie (2016-09-23-raspbian-jessie.)
 
@@ -36,7 +36,10 @@ Given the proper circuit protection, you should be able to put this together on 
 The test application exits after 10 seconds has elapsed.
 
 Remember that the GPIO pins can be harmed by voltages higher than 3.3V or by excessive currents.
-A good value for the LED current limiting resistor may be around 330KΩ and the pull-up resistor on the button may be about 10KΩ.
+A good value for the LED current limiting resistor may be around 330Ω and the pull-up resistor on the button may be about 10KΩ.
+
+See our friends at Adafruit for detailed example of how to connect LEDs to Pi GPIO Pins: 
+https://learn.adafruit.com/raspberry-pi-e-mail-notifier-using-leds/wire-leds
 
 I hope that you have fun with this.
 
@@ -48,7 +51,6 @@ TODO:
 1. Pulse Width Modulation (PWM)
 2. Pull up / down resistors
 3. Interrupts, callbacks
-4. Circuit diagram (or photo) for GpioTest setup.
 
 Regards,
 
@@ -56,4 +58,6 @@ Barrett Davis
 Tree Frog Software
 barrett@thefrog.com
 
-https://github.com/barrettd/Raspberry-Pi-Cpp.git
+https://github.com/barrettd/Raspberry-Pi-Cpp
+
+
