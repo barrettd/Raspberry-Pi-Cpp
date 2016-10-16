@@ -39,7 +39,8 @@ I hope that you have fun with this.
 
 Let me know if you have any issues or would like additions.
 
-TODO: 
+TODO:
+
 1. Pulse Width Modulation (PWM)
 2. Pull up / down resistors
 3. Interrupts, callbacks
