@@ -17,6 +17,7 @@ The intermediate and final files are placed into a build/ directory, away from t
 This allows you to easily keep the source and build products separate.
 
 Here are the steps to follow to build the pi_lib and the test app:
+
 1. cd lib/
 2. make directories
 3. make
@@ -25,6 +26,7 @@ Here are the steps to follow to build the pi_lib and the test app:
 6. make
 
 Then to run the test app:
+
 1. cd ../build
 2. sudo bin/GpioTest
 
