@@ -1,5 +1,5 @@
 # Raspberry-Pi-Cpp
-pi_lib version 0.00 - Under initial development. Do not use yet.
+pi_lib version 0.01 - Under initial development. Do not use yet.
 
 pi_lib is a little C++ library for the Raspberry Pi running Debian Raspbian Jessie (2016-09-23-raspbian-jessie.)
 
@@ -31,13 +31,17 @@ Then to run the test app:
 2. sudo bin/GpioTest
 
 The test application, GpioTest, sets up an input GPIO object for GPIO_04 (a button) and an output GPIO object for GPIO_14 (a LED.)
-The application loops for 10 seconds reading the state from the button and writing state to the LED.  Given the proper circuit protection, you should be able to put this together on a proto board and watch the LED respond to your button press.
+The application loops for 10 seconds reading the state from the button and writing state to the LED.  
+Given the proper circuit protection, you should be able to put this together on a proto board and watch the LED respond to your button press.
+The test application exits after 10 seconds has elapsed.
 
-Remember that the GPIO pins can be harmed by voltages higher than 3.3V.  A good value for the LED current limiting resistor may be around 330KΩ and the pull-up resisor on the button may be about 10KΩ.
+Remember that the GPIO pins can be harmed by voltages higher than 3.3V or by excessive currents.
+A good value for the LED current limiting resistor may be around 330KΩ and the pull-up resistor on the button may be about 10KΩ.
 
 I hope that you have fun with this.
 
-Let me know if you have any issues or would like additions.
+Please let me know if you have any issues or would like additions.  
+I would love to hear about how you incorporate this library into your projects.
 
 TODO:
 
