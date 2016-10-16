@@ -11,12 +11,12 @@ The Rasbain Jessie release that I am using does not natively come with CMake, so
 There are Makefiles in the lib/ and test/ directories.  We build "out of source", meaning that the 
 output of the build is not mixed in with our source files.
 
-The first run the Makefile in lib/ to make the pi_lib.a, then run the Makefile in test/ to make the test app to see how the code works.
+The first run the Makefile in lib/ to create the pi_lib.a, then run the Makefile in test/ to create the GpioTest to demonstrate how the code works.
 
 The intermediate and final files are placed into a build/ directory, away from the source files.  
 This allows you to easily keep the source and build products separate.
 
-Here are the steps to follow to build the pi_lib and the test app.
+Here are the steps to follow to build the pi_lib and the test app:
 1. cd lib/
 2. make directories
 3. make
