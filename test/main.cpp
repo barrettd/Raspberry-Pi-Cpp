@@ -17,13 +17,20 @@ int main( void ) {
     std::cout << "GPIO test application\n";
     
     struct timespec start;
-    struct timespec end;
+    time_t elapsed_seconds;
     
-    /* measure monotonic time */
-    clock_gettime(CLOCK_MONOTONIC, &start);	/* mark start time */
-    clock_gettime(CLOCK_MONOTONIC, &end);	/* mark the end time */
+
+    clock_gettime( CLOCK_MONOTONIC, &start );       // Get the start time.
     
-//    diff = BILLION * (end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec;
+    do {
+
+        struct timespec now;
+        clock_gettime( CLOCK_MONOTONIC, &now );
+        elapsed_seconds = now.tv_sec - start.tv_sec;
+    } while( elapsed_seconds < 10 );
+
+    std::cout << "GPIO test application\n";
+
     return 0;
 }
 
