@@ -58,6 +58,8 @@ Barrett Davis
 Tree Frog Software
 barrett@thefrog.com
 
+http://thefrog.com/barrett/
+
 https://github.com/barrettd/Raspberry-Pi-Cpp
 
 
