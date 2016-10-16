@@ -9,28 +9,40 @@
 #include "gpio.hpp"
 
 namespace  tfs  {
+    
+    void test( void ) {
+        GpioInput  button( GPIO_04 );
+        GpioOutput led(    GPIO_14 );
+        
+        if( !button.ok() || !led.ok()) {
+            std::cerr << "GPIO objects not well formed.\n";
+            return;
+        }
+        
+        struct timespec start;
+        clock_gettime( CLOCK_MONOTONIC, &start );       // Get the start time.
+        
+        time_t elapsed_seconds;
+        do {
+            
+            struct timespec now;
+            clock_gettime( CLOCK_MONOTONIC, &now );
+            elapsed_seconds = now.tv_sec - start.tv_sec;
+        } while( elapsed_seconds < 10 );
 
+        return;
+    }
+
+    
 
 }   // namespace tfs
 
 int main( void ) {
     std::cout << "GPIO test application\n";
     
-    struct timespec start;
-    time_t elapsed_seconds;
+    tfs::test();
     
-
-    clock_gettime( CLOCK_MONOTONIC, &start );       // Get the start time.
-    
-    do {
-
-        struct timespec now;
-        clock_gettime( CLOCK_MONOTONIC, &now );
-        elapsed_seconds = now.tv_sec - start.tv_sec;
-    } while( elapsed_seconds < 10 );
-
     std::cout << "GPIO test application\n";
-
     return 0;
 }
 

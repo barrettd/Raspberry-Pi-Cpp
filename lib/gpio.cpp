@@ -43,6 +43,11 @@ namespace  tfs {
         return RESISTOR_NONE;
     }
     
+    bool
+    Gpio::ok( void ) const {
+        return m_status == STATUS_OK;
+    }
+    
     STATUS
     Gpio::clearStatus( void ) {
         return m_status = STATUS_OK;

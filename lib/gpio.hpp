@@ -141,10 +141,10 @@ namespace  tfs {
         
         bool     setResistor( RESISTOR value );
         RESISTOR getResistor( void );
-        
+    
         STATUS clearStatus( void );
         STATUS getStatus( void ) const;
-
+        bool ok( void ) const;
     };
     
     class GpioInput : public Gpio {
