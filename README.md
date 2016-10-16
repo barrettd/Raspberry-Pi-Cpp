@@ -1,11 +1,12 @@
 # Raspberry-Pi-Cpp
-Version 0.00 - Under initial development. Do not use yet.
+pi_lib version 0.00 - Under initial development. Do not use yet.
 
-pi_lib, a little C++ library for the Raspberry Pi running Debian Raspbian Jessie (2016-09-23-raspbian-jessie.)
+pi_lib is a little C++ library for the Raspberry Pi running Debian Raspbian Jessie (2016-09-23-raspbian-jessie.)
 
-All of this code has been tested with a Raspberry Pi 3 Model B V1.2.
+All of this code has been tested with a Raspberry Pi 3 Model B V1.2.  Although is *should* run on other versions of Pi with the same OS.
+The GPIO control is done with the Linux sysfs system & drivers which should make this code fairly portable.
 
-The Rasbain Jessie release that I am using does not natively come with CMake, so we use Makefiles to build the pi_lib and test app.
+The Rasbain Jessie release that I am using does not natively come with CMake, so we use Makefiles to build the pi_lib and the test app.
 
 There are Makefiles in the lib/ and test/ directories.  We build "out of source", meaning that the 
 output of the build is not mixed in with our source files.
@@ -16,24 +17,30 @@ The intermediate and final files are placed into a build/ directory, away from t
 This allows you to easily keep the source and build products separate.
 
 Here are the steps to follow to build the pi_lib and the test app.
-cd lib/
-make directories
-make
-cd ../test
-make directories
-make
+1. cd lib/
+2. make directories
+3. make
+4. cd ../test
+5. make directories
+6. make
 
 Then to run the test app:
-cd ../build
-bin/GpioTest
+1. cd ../build
+2. sudo bin/GpioTest
 
 I hope that you have fun with this.
 
 Let me know if you have any issues or would like additions.
 
+TODO: 
+1. Pulse Width Modulation (PWM)
+2. Pull up / down resistors
+3. Interrupts, callbacks
+
 Regards,
 
-Barrett
+Barrett Davis
+Tree Frog Software
 barrett@thefrog.com
 
 https://github.com/barrettd/Raspberry-Pi-Cpp.git
