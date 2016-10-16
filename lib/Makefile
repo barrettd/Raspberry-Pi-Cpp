@@ -50,7 +50,7 @@ OBJS = 	$(OBJ_DIR)Gpio.o
 # -----------------------------------------------------------------------------
 # We list the individual source file dependencies here.
 # -----------------------------------------------------------------------------
-$(OBJ_DIR)Gpio.o        : Gpio.cpp     Gpio.hpp
+$(OBJ_DIR)gpio.o        : gpio.cpp     gpio.hpp
 
 
 
