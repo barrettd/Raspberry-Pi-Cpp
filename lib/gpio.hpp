@@ -81,7 +81,7 @@ namespace  tfs {
     //  PIN_25 = Ground,
         PIN_26 = GPIO_07,
     // -----------------------------------------------------------------------
-    // Early Pi2 connectors stopped here.
+    // Early Pi2 connectors stopped here, Late Pi2 & Pi3 connectors continue.
     // -----------------------------------------------------------------------
     //  PIN_27 = GPIO_00 ID_SD, EEPROM Data
     //  PIN_28 = GPIO_01 ID_SC, EEPROM Clock
