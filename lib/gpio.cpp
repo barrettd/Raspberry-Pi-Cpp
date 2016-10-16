@@ -18,19 +18,19 @@
 
 namespace  tfs {
    
-#pragma mark - GPIO Base class
+// #pragma mark - GPIO Base class
     
     Gpio::Gpio( GPIO_ID id ):
     m_id( id ),
     m_status( STATUS_OK ) {
         std::stringstream path;
         path << "/sys/class/gpio/gpio" << m_id << "/value";
-        m_value_path = path.str();
-        writeExport();
+        m_value_path = path.str();  // Cache this frequenly used sysfs path
+        writeExport();              // Open this pin
     }
     
     Gpio::~Gpio( void ) {
-        writeUnexport();
+        writeUnexport();            // Close this pin
     }
     
     bool
@@ -60,12 +60,19 @@ namespace  tfs {
 
     bool
     Gpio::setStatus( STATUS status ) {
+        // ---------------------------------------------------------------------------
+        // This method is used internally to set the status and provide a consistent return value.
+        // ---------------------------------------------------------------------------
         m_status = status;
         return m_status == STATUS_OK;
     }
     
     bool
     Gpio::write( const char *path, const std::string &message ) {
+        // ---------------------------------------------------------------------------
+        // Write a string to a file
+        // Returns true for success, false for failure.
+        // ---------------------------------------------------------------------------
         if( path == 0 || *path == 0 || message.empty()) {
             return setStatus( STATUS_INTERNAL_BAD_ARG );
         }
@@ -79,11 +86,15 @@ namespace  tfs {
             result = setStatus( STATUS_ERROR_FILE_WRITE );
         }
         stream.close();
-        return result;
+        return result;  // Important for caller to check this result.
     }
     
     bool
     Gpio::read( const char *path, std::string &value ) {
+        // ---------------------------------------------------------------------------
+        // Read a string from a file.
+        // Returns true for success, false for failure.
+        // ---------------------------------------------------------------------------
         if( path == 0 || *path == 0 ) {
             return setStatus( STATUS_INTERNAL_BAD_ARG );
         }
@@ -97,11 +108,15 @@ namespace  tfs {
             result = setStatus( STATUS_ERROR_FILE_READ );
         }
         stream.close();
-        return result;              // Important to check read status.
+        return result;  // Important for caller to check this result.
     }
     
     bool
     Gpio::read( const char *path, bool &value ) {
+        // ---------------------------------------------------------------------------
+        // Read a boolean from a file.
+        // Returns true for success, false for failure.
+        // ---------------------------------------------------------------------------
         if( path == 0 || *path == 0 ) {
             return setStatus( STATUS_INTERNAL_BAD_ARG );
         }
@@ -115,13 +130,16 @@ namespace  tfs {
             result = setStatus( STATUS_ERROR_FILE_READ );
         }
         stream.close();
-        value = val == '1';         // We expect '1' or '0'
-        return result;              // Important to check read status.
+        value = val == '1'; // We expect '1' or '0'
+        return result;      // Important for caller to check this result.
     }
 
-    
     bool
     Gpio::writeExport( void ) {
+        // ---------------------------------------------------------------------------
+        // Open the GPIO pin
+        // Returns true for success, false for failure.
+        // ---------------------------------------------------------------------------
         std::stringstream message;
         message << m_id;
         return write( "/sys/class/gpio/export", message.str());
@@ -129,6 +147,10 @@ namespace  tfs {
     
     bool
     Gpio::writeUnexport( void ) {
+        // ---------------------------------------------------------------------------
+        // Close the GPIO pin
+        // Returns true for success, false for failure.
+        // ---------------------------------------------------------------------------
         std::stringstream message;
         message << m_id;
         return write( "/sys/class/gpio/unexport", message.str());
@@ -136,6 +158,10 @@ namespace  tfs {
     
     bool
     Gpio::writeDirection( bool input ) {
+        // ---------------------------------------------------------------------------
+        // Set the write direction.
+        // Returns true for success, false for failure.
+        // ---------------------------------------------------------------------------
         std::string message;
         if( input ) {
             message = "in";
@@ -149,6 +175,10 @@ namespace  tfs {
     
     bool
     Gpio::readDirction( bool &input ) {
+        // ---------------------------------------------------------------------------
+        // Read the write direction.
+        // Returns true for success, false for failure.
+        // ---------------------------------------------------------------------------
         std::string contents;
         std::stringstream path;
         path << "/sys/class/gpio/gpio" << m_id << "/direction";
@@ -164,6 +194,10 @@ namespace  tfs {
     
     bool
     Gpio::writeValue( bool value ) {
+        // ---------------------------------------------------------------------------
+        // Write a boolean to the GPIO pin
+        // Returns true for success, false for failure.
+        // ---------------------------------------------------------------------------
         if( value ) {
             return write( m_value_path.c_str(), "1" );
         }
@@ -172,11 +206,15 @@ namespace  tfs {
     
     bool
     Gpio::readValue( bool &value ) {
+        // ---------------------------------------------------------------------------
+        // Read a bolean from the GPIO pin.
+        // Returns true for success, false for failure.
+        // ---------------------------------------------------------------------------
         return read( m_value_path.c_str(), value );
     }
 
     
-#pragma mark - GPIO Input class
+// #pragma mark - GPIO Input class
     
     GpioInput::GpioInput( GPIO_ID id ):
     Gpio( id ) {
@@ -185,11 +223,15 @@ namespace  tfs {
     
     bool
     GpioInput::read( bool &value ) {
+        // ---------------------------------------------------------------------------
+        // Read a boolean from the GPIO pin.
+        // Returns true for success, false for failure.
+        // ---------------------------------------------------------------------------
         return readValue( value );
     }
 
     
-#pragma mark - GPIO Output class
+// #pragma mark - GPIO Output class
     
     GpioOutput::GpioOutput( GPIO_ID id ):
     Gpio( id ) {
@@ -198,6 +240,10 @@ namespace  tfs {
     
     bool
     GpioOutput::write( bool value ) {
+        // ---------------------------------------------------------------------------
+        // Write a boolean to the GPIO pin.
+        // Returns true for success, false for failure.
+        // ---------------------------------------------------------------------------
         return writeValue( value );
     }
     

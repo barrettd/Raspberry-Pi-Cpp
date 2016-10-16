@@ -17,9 +17,6 @@
 
 namespace  tfs {
     
-    // Pull up, pull down resisters
-    // Server, PWM
-    
     // -----------------------------------------------------------------------
     // The GPIO pins can be referred to by the Broadcom pin numbers or the
     // P1 40 pin connector number.
@@ -55,7 +52,7 @@ namespace  tfs {
         GPIO_26,
         GPIO_27,
     // -----------------------------------------------------------------------
-    // (Pi 3) P1 connector pinouts
+    // (Pi3) P1 connector pinouts, mapped to the Broadcom values internally.
     // -----------------------------------------------------------------------
     //  PIN_01 = 3.3 Volts
     //  PIN_02 = 5.0 Volts
@@ -84,7 +81,7 @@ namespace  tfs {
     //  PIN_25 = Ground,
         PIN_26 = GPIO_07,
     // -----------------------------------------------------------------------
-    // Early Pi 2 connectors stopped here.
+    // Early Pi2 connectors stopped here.
     // -----------------------------------------------------------------------
     //  PIN_27 = GPIO_00 ID_SD, EEPROM Data
     //  PIN_28 = GPIO_01 ID_SC, EEPROM Clock
@@ -109,18 +106,18 @@ namespace  tfs {
     };
     
     enum STATUS {
-        STATUS_OK = 0,
-        STATUS_INTERNAL_BAD_ARG,
-        STATUS_ERROR_FILE_OPEN,
-        STATUS_ERROR_FILE_WRITE,
-        STATUS_ERROR_FILE_READ,
+        STATUS_OK = 0,              // Everything is fine
+        STATUS_INTERNAL_BAD_ARG,    // This should not happen. Internal programming error.
+        STATUS_ERROR_FILE_OPEN,     // Error opening a sysfs file. e.g. "/sys/class/gpio/export"
+        STATUS_ERROR_FILE_WRITE,    // Error writing to a sysfs file after opening.
+        STATUS_ERROR_FILE_READ,     // Error reading from a sysfs file after opening.
     };
     
-    class Gpio {
+    class Gpio {                    // Base clase, use GpioInput or GpioOutput when you instantiate.
     protected:
-        GPIO_ID     m_id;
-        STATUS      m_status;
-        std::string m_value_path;
+        GPIO_ID     m_id;           // This is the Broadcom GPIO id.
+        STATUS      m_status;       // This is the status from the last operation.
+        std::string m_value_path;   // This is the cached Linux sysfs path for reading / writing GPIO values for this object.
         
     protected:
         bool setStatus( STATUS status );
@@ -129,41 +126,39 @@ namespace  tfs {
         bool read(  const char *path, std::string &value );
         bool read(  const char *path, bool &value );
         
-        bool writeExport( void );
-        bool writeUnexport( void );
+        bool writeExport( void );               // "Open" the GPIO pin.
+        bool writeUnexport( void );             // "Close" the GPIO pin.
         
-        bool writeDirection( bool input );      // true (1) for input, false (0) for output
-        bool readDirction(  bool &input );
+        bool writeDirection( bool  input );     // Set the I/O direction: true (1) for input, false (0) for output
+        bool readDirction(   bool &input );     // Get the I/O direction: true (1) for input, false (0) for output
         
-        bool writeValue( bool value );
-        bool readValue( bool &value );
+        bool writeValue( bool  value );         // Write a boolean. Returns true for success, false for failure.
+        bool readValue(  bool &value );         // Read a boolean. Returns true for success, false for failure.
         
     public:
-                 Gpio( GPIO_ID id );
-        virtual ~Gpio( void );
+                 Gpio( GPIO_ID id );            // Constructor
+        virtual ~Gpio( void );                  // Destructor (no need to call directly.)
         
-        bool     setResistor( RESISTOR value );
-        RESISTOR getResistor( void );
+        bool     setResistor( RESISTOR value ); // Set the resistor pull-up/down state
+        RESISTOR getResistor( void );           // Get the resistor pull-up/down state
     
-        STATUS clearStatus( void );
-        STATUS getStatus( void ) const;
-        bool ok( void ) const;
+        STATUS clearStatus( void );             // Set the status to STATUS_OK
+        STATUS getStatus( void ) const;         // Get the status
+        bool ok( void ) const;                  // Test if the status == STATUS_OK
     };
     
-    class GpioInput : public Gpio {
+    class GpioInput : public Gpio {             // Input GPIO object
     public:
-        GpioInput( GPIO_ID id );
+        GpioInput( GPIO_ID id );                // Constructor
         
-        bool read( bool &value );
-        
+        bool read( bool &value );               // Read a boolean
     };
     
-    class GpioOutput : public Gpio {
+    class GpioOutput : public Gpio {            // Output GPIO object
     public:
-        GpioOutput( GPIO_ID id );
+        GpioOutput( GPIO_ID id );               // Constructor
         
-        bool write( bool value );
-    
+        bool write( bool value );               // Write a boolean
     };
     
     
