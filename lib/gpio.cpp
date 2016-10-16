@@ -71,7 +71,7 @@ namespace  tfs {
     bool
     Gpio::write( const char *path, const std::string &message ) {
         // ---------------------------------------------------------------------------
-        // Write a string to a file
+        // Write a string to a file, set this object status.
         // Returns true for success, false for failure.
         // ---------------------------------------------------------------------------
         if( path == 0 || *path == 0 || message.empty()) {
@@ -93,7 +93,7 @@ namespace  tfs {
     bool
     Gpio::write( const char *path, const bool value ) {
         // ---------------------------------------------------------------------------
-        // Write a boolean to a file
+        // Write a boolean to a file, set this object status.
         // Returns true for success, false for failure.
         // ---------------------------------------------------------------------------
         if( path == 0 || *path == 0 ) {
@@ -122,7 +122,7 @@ namespace  tfs {
     bool
     Gpio::read( const char *path, std::string &value ) {
         // ---------------------------------------------------------------------------
-        // Read a string from a file.
+        // Read a string from a file, set this object status.
         // Returns true for success, false for failure.
         // ---------------------------------------------------------------------------
         if( path == 0 || *path == 0 ) {
@@ -144,7 +144,7 @@ namespace  tfs {
     bool
     Gpio::read( const char *path, bool &value ) {
         // ---------------------------------------------------------------------------
-        // Read a boolean from a file.
+        // Read a boolean from a file, set this object status.
         // Returns true for success, false for failure.
         // ---------------------------------------------------------------------------
         if( path == 0 || *path == 0 ) {
@@ -206,7 +206,7 @@ namespace  tfs {
     bool
     Gpio::readDirction( bool &input ) {
         // ---------------------------------------------------------------------------
-        // Read the write direction.
+        // Read the write direction, set this object status.
         // Returns true for success, false for failure.
         // ---------------------------------------------------------------------------
         std::string contents;
@@ -245,7 +245,7 @@ namespace  tfs {
     
     GpioInput::GpioInput( GPIO_ID id ):
     Gpio( id ) {
-        writeDirection( false );
+        writeDirection( true );     // true (1) == input
     }
     
     bool
@@ -262,7 +262,7 @@ namespace  tfs {
     
     GpioOutput::GpioOutput( GPIO_ID id ):
     Gpio( id ) {
-        writeDirection( true );
+        writeDirection( false );    // false (0) == output
     }
     
     bool

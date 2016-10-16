@@ -18,8 +18,8 @@
 namespace  tfs {
     
     // -----------------------------------------------------------------------
-    // The GPIO pins can be referred to by the Broadcom pin numbers or the
-    // P1 40 pin connector number.
+    // The GPIO pins can be referred to by either the Broadcom pin numbers or
+    // the P1 40 pin connector number.
     // -----------------------------------------------------------------------
     enum GPIO_ID {
     // -----------------------------------------------------------------------
@@ -52,7 +52,7 @@ namespace  tfs {
         GPIO_26,
         GPIO_27,
     // -----------------------------------------------------------------------
-    // (Pi3) P1 connector pinouts, mapped to the Broadcom values internally.
+    // P1 connector pinouts, internally mapped to the Broadcom values.
     // -----------------------------------------------------------------------
     //  PIN_01 = 3.3 Volts
     //  PIN_02 = 5.0 Volts
@@ -108,16 +108,16 @@ namespace  tfs {
     enum STATUS {
         STATUS_OK = 0,              // Everything is awesome...
         STATUS_INTERNAL_BAD_ARG,    // This should not happen. Internal programming error.
-        STATUS_ERROR_FILE_OPEN,     // Error opening a sysfs file. e.g. "/sys/class/gpio/export"
+        STATUS_ERROR_FILE_OPEN,     // Error opening a sysfs file. e.g. "/sys/class/gpio/export". Maybe permissions? sudo ...
         STATUS_ERROR_FILE_WRITE,    // Error writing to a sysfs file after opening.
         STATUS_ERROR_FILE_READ,     // Error reading from a sysfs file after opening.
     };
     
     class Gpio {                    // Base class, use GpioInput or GpioOutput when you instantiate.
     protected:
-        GPIO_ID     m_id;           // This is the Broadcom GPIO id.
-        STATUS      m_status;       // This is the status from the last operation.
-        std::string m_value_path;   // This is the cached Linux sysfs path for reading / writing GPIO values for this object.
+        GPIO_ID     m_id;           // Broadcom GPIO logical id.
+        STATUS      m_status;       // Status from the last operation.
+        std::string m_value_path;   // Cached Linux sysfs path for reading / writing GPIO values for this object.
         
     protected:
         bool setStatus( STATUS status );        // Set the status and return: status == STATUS_OK
@@ -152,14 +152,14 @@ namespace  tfs {
     public:
         GpioInput( GPIO_ID id );                // Constructor
         
-        bool read( bool &value );               // Read a boolean
+        bool read( bool &value );               // Read a boolean. Returns true for success, false for failure.
     };
     
     class GpioOutput : public Gpio {            // Output GPIO object
     public:
         GpioOutput( GPIO_ID id );               // Constructor
         
-        bool write( bool value );               // Write a boolean
+        bool write( bool value );               // Write a boolean. Returns true for success, false for failure.
     };
     
     
