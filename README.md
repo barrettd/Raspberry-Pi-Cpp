@@ -30,6 +30,11 @@ Then to run the test app:
 1. cd ../build
 2. sudo bin/GpioTest
 
+The test application, GpioTest, sets up an input GPIO object for GPIO_04 (a button) and an output GPIO object for GPIO_14 (a LED.)
+The application loops for 10 seconds reading the state from the button and writing state to the LED.  Given the proper circuit protection, you should be able to put this together on a proto board and watch the LED respond to your button press.
+
+Remember that the GPIO pins can be harmed by voltages higher than 3.3V.  A good value for the LED current limiting resistor may be around 330KΩ and the pull-up resisor on the button may be about 10KΩ.
+
 I hope that you have fun with this.
 
 Let me know if you have any issues or would like additions.
@@ -38,6 +43,7 @@ TODO:
 1. Pulse Width Modulation (PWM)
 2. Pull up / down resistors
 3. Interrupts, callbacks
+4. Circuit diagram (or photo) for GpioTest setup.
 
 Regards,
 
