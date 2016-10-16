@@ -106,7 +106,7 @@ namespace  tfs {
     };
     
     enum STATUS {
-        STATUS_OK = 0,              // Everything is fine
+        STATUS_OK = 0,              // Everything is awesome...
         STATUS_INTERNAL_BAD_ARG,    // This should not happen. Internal programming error.
         STATUS_ERROR_FILE_OPEN,     // Error opening a sysfs file. e.g. "/sys/class/gpio/export"
         STATUS_ERROR_FILE_WRITE,    // Error writing to a sysfs file after opening.
@@ -120,20 +120,21 @@ namespace  tfs {
         std::string m_value_path;   // This is the cached Linux sysfs path for reading / writing GPIO values for this object.
         
     protected:
-        bool setStatus( STATUS status );
+        bool setStatus( STATUS status );        // Set the status and return: status == STATUS_OK
         
-        bool write( const char *path, const std::string &message );
-        bool read(  const char *path, std::string &value );
-        bool read(  const char *path, bool &value );
+        bool write( const char *path, const std::string &message ); // Write a string.
+        bool write( const char *path, const bool value );           // Write a boolean.
+        bool read(  const char *path, std::string &value );         // Read a string.
+        bool read(  const char *path, bool &value );                // Read a boolean.
         
-        bool writeExport( void );               // "Open" the GPIO pin.
+        bool writeExport(   void );             // "Open" the GPIO pin.
         bool writeUnexport( void );             // "Close" the GPIO pin.
         
         bool writeDirection( bool  input );     // Set the I/O direction: true (1) for input, false (0) for output
         bool readDirction(   bool &input );     // Get the I/O direction: true (1) for input, false (0) for output
         
         bool writeValue( bool  value );         // Write a boolean. Returns true for success, false for failure.
-        bool readValue(  bool &value );         // Read a boolean. Returns true for success, false for failure.
+        bool readValue(  bool &value );         // Read a boolean.  Returns true for success, false for failure.
         
     public:
                  Gpio( GPIO_ID id );            // Constructor
@@ -144,7 +145,7 @@ namespace  tfs {
     
         STATUS clearStatus( void );             // Set the status to STATUS_OK
         STATUS getStatus( void ) const;         // Get the status
-        bool ok( void ) const;                  // Test if the status == STATUS_OK
+        bool   ok( void ) const;                // Test if the status == STATUS_OK
     };
     
     class GpioInput : public Gpio {             // Input GPIO object

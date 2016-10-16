@@ -91,6 +91,35 @@ namespace  tfs {
     }
     
     bool
+    Gpio::write( const char *path, const bool value ) {
+        // ---------------------------------------------------------------------------
+        // Write a boolean to a file
+        // Returns true for success, false for failure.
+        // ---------------------------------------------------------------------------
+        if( path == 0 || *path == 0 ) {
+            return setStatus( STATUS_INTERNAL_BAD_ARG );
+        }
+        char buffer[2];
+        if( value ) {
+            buffer[0] = '1';
+        } else {
+            buffer[0] = '0';
+        }
+        buffer[1] = 0;              // Not strictly needed.
+        std::ofstream stream( path );
+        if( !stream ) {
+            return setStatus( STATUS_ERROR_FILE_OPEN );
+        }
+        STATUS status = STATUS_OK;
+        stream.write( buffer, 1 );
+        if( stream.bad()) {
+            status = STATUS_ERROR_FILE_WRITE;
+        }
+        stream.close();
+        return setStatus( status ); // Important for caller to check this result.
+    }
+    
+    bool
     Gpio::read( const char *path, std::string &value ) {
         // ---------------------------------------------------------------------------
         // Read a string from a file.
@@ -199,10 +228,7 @@ namespace  tfs {
         // Write a boolean to the GPIO pin
         // Returns true for success, false for failure.
         // ---------------------------------------------------------------------------
-        if( value ) {
-            return write( m_value_path.c_str(), "1" );
-        }
-        return write( m_value_path.c_str(), "0" );
+        return write( m_value_path.c_str(), value );
     }
     
     bool
