@@ -62,6 +62,7 @@ namespace  tfs {
     Gpio::setStatus( STATUS status ) {
         // ---------------------------------------------------------------------------
         // This method is used internally to set the status and provide a consistent return value.
+        // Returns true for success, false for failure.
         // ---------------------------------------------------------------------------
         m_status = status;
         return m_status == STATUS_OK;
@@ -80,13 +81,13 @@ namespace  tfs {
         if( !stream ) {
             return setStatus( STATUS_ERROR_FILE_OPEN );
         }
-        bool result = setStatus( STATUS_OK );
+        STATUS status = STATUS_OK;
         stream << message;
         if( stream.bad()) {
-            result = setStatus( STATUS_ERROR_FILE_WRITE );
+            status = STATUS_ERROR_FILE_WRITE;
         }
         stream.close();
-        return result;  // Important for caller to check this result.
+        return setStatus( status ); // Important for caller to check this result.
     }
     
     bool
@@ -102,13 +103,13 @@ namespace  tfs {
         if( !stream ) {
             return setStatus( STATUS_ERROR_FILE_OPEN );
         }
-        bool result = setStatus( STATUS_OK );
+        STATUS status = STATUS_OK;
         stream >> value;
         if( stream.bad()) {
-            result = setStatus( STATUS_ERROR_FILE_READ );
+            status = STATUS_ERROR_FILE_READ;
         }
         stream.close();
-        return result;  // Important for caller to check this result.
+        return setStatus( status ); // Important for caller to check this result.
     }
     
     bool
@@ -124,14 +125,14 @@ namespace  tfs {
         if( !stream ) {
             return setStatus( STATUS_ERROR_FILE_OPEN );
         }
-        bool result = setStatus( STATUS_OK );
+        STATUS status = STATUS_OK;
         const int val = stream.get();
         if( stream.bad()) {
-            result = setStatus( STATUS_ERROR_FILE_READ );
+            status = STATUS_ERROR_FILE_READ;
         }
         stream.close();
-        value = val == '1'; // We expect '1' or '0'
-        return result;      // Important for caller to check this result.
+        value = val == '1';         // We expect '1' or '0'
+        return setStatus( status ); // Important for caller to check this result.
     }
 
     bool

@@ -113,7 +113,7 @@ namespace  tfs {
         STATUS_ERROR_FILE_READ,     // Error reading from a sysfs file after opening.
     };
     
-    class Gpio {                    // Base clase, use GpioInput or GpioOutput when you instantiate.
+    class Gpio {                    // Base class, use GpioInput or GpioOutput when you instantiate.
     protected:
         GPIO_ID     m_id;           // This is the Broadcom GPIO id.
         STATUS      m_status;       // This is the status from the last operation.
