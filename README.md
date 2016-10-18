@@ -1,5 +1,5 @@
 # Raspberry-Pi-Cpp
-pi_lib version 1.00 - Initial release.  16 Oct 2016
+pi_lib version 1.10 - Initial release.  18 Oct 2016
 
 pi_lib is a little C++ library for the Raspberry Pi running Debian Raspbian Jessie (2016-09-23-raspbian-jessie.)
 
@@ -60,15 +60,14 @@ TODO:
 
 1. Pulse Width Modulation (PWM)
 2. Pull up / down resistors
-3. Interrupts, callbacks
 
 Regards,
 
-Barrett Davis
-Tree Frog Software
+[Barrett Davis](http://thefrog.com/barrett/)
 barrett@thefrog.com
 
-http://thefrog.com/barrett/
+[Tree Frog Software](http://www.thefrog.com)
+
 
 https://github.com/barrettd/Raspberry-Pi-Cpp
 
