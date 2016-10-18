@@ -11,6 +11,10 @@
 // GPIO hardware discussion:
 // http://elinux.org/RPi_Low-level_peripherals
 // ---------------------------------------------------------------------------
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <fstream>
 #include <sstream>
 #include "gpio.hpp"
@@ -18,21 +22,53 @@
 
 namespace  tfs {
    
+    static const int CLOSED_FD = -1;
+    
 // ---------------------------------------------------------------------------
 // #pragma mark - GPIO Base class
 // ---------------------------------------------------------------------------
     
     Gpio::Gpio( GPIO_ID id ):
     m_id( id ),
-    m_status( STATUS_OK ) {
-        std::stringstream path;
-        path << "/sys/class/gpio/gpio" << m_id << "/value";
-        m_value_path = path.str();  // Cache this frequenly used sysfs path
+    m_status( STATUS_OK ),
+    m_fd( CLOSED_FD ) {
         writeExport();              // Open this pin
     }
     
     Gpio::~Gpio( void ) {
+        close();
         writeUnexport();            // Close this pin
+    }
+    
+    GPIO_ID
+    Gpio::getId( void ) const {
+        return m_id;
+    }
+
+    bool
+    Gpio::open( const int direction ) {     // direction = O_RDONLY or O_WRONLY
+        // Open the value file and keep it open for the lifetime of the object.
+        // We use the low level C methods to give us access to poll(), select(), seek() etc.
+        std::stringstream path;
+        path << "/sys/class/gpio/gpio" << m_id << "/value";
+        m_fd = ::open( path.str().c_str(), direction );
+        if( m_fd < 0 ) {
+            return setStatus( STATUS_ERROR_FILE_OPEN );
+        }
+        return setStatus( STATUS_OK );
+    }
+    
+    void
+    Gpio::close( void ) {
+        if( m_fd >= 0 ) {
+            ::close( m_fd );
+            m_fd = CLOSED_FD;
+        }
+    }
+    
+    int
+    Gpio::getFileDescriptor( void ) const {
+        return m_fd;
     }
     
     bool
@@ -224,24 +260,6 @@ namespace  tfs {
         return setStatus( STATUS_OK );
     }
     
-    bool
-    Gpio::writeValue( bool value ) {
-        // ---------------------------------------------------------------------------
-        // Write a boolean to the GPIO pin
-        // Returns true for success, false for failure.
-        // ---------------------------------------------------------------------------
-        return write( m_value_path.c_str(), value );
-    }
-    
-    bool
-    Gpio::readValue( bool &value ) {
-        // ---------------------------------------------------------------------------
-        // Read a bolean from the GPIO pin.
-        // Returns true for success, false for failure.
-        // ---------------------------------------------------------------------------
-        return read( m_value_path.c_str(), value );
-    }
-
     
 // ---------------------------------------------------------------------------
 // #pragma mark - GPIO Input class
@@ -250,6 +268,7 @@ namespace  tfs {
     GpioInput::GpioInput( GPIO_ID id ):
     Gpio( id ) {
         writeDirection( true );     // true (1) == input
+        open( O_RDONLY );
     }
     
     bool
@@ -258,7 +277,22 @@ namespace  tfs {
         // Read a boolean from the GPIO pin.
         // Returns true for success, false for failure.
         // ---------------------------------------------------------------------------
-        return readValue( value );
+        if( m_fd < 0 ) {
+            return setStatus( STATUS_ERROR_FILE_OPEN );
+        }
+        const size_t offset = lseek( m_fd, 0, SEEK_SET );       // Seek to beginning
+        if( offset != 0 ) {
+            return setStatus( STATUS_ERROR_FILE_SEEK );
+        }
+        char buffer[2];
+        buffer[0] = 0;
+        buffer[1] = 0;          // Unused, but provides null termination if debugging
+        const size_t count = ::read( m_fd, buffer, 1 );
+        if( count < 1 ) {
+            return setStatus( STATUS_ERROR_FILE_READ );
+        }
+        value = buffer[0] == '1';
+        return setStatus( STATUS_OK );
     }
 
     
@@ -269,6 +303,7 @@ namespace  tfs {
     GpioOutput::GpioOutput( GPIO_ID id ):
     Gpio( id ) {
         writeDirection( false );    // false (0) == output
+        open( O_WRONLY );
     }
     
     bool
@@ -277,7 +312,25 @@ namespace  tfs {
         // Write a boolean to the GPIO pin.
         // Returns true for success, false for failure.
         // ---------------------------------------------------------------------------
-        return writeValue( value );
+        if( m_fd < 0 ) {
+            return setStatus( STATUS_ERROR_FILE_OPEN );
+        }
+        const size_t offset = lseek( m_fd, 0, SEEK_SET );       // Seek to beginning
+        if( offset != 0 ) {
+            return setStatus( STATUS_ERROR_FILE_SEEK );
+        }
+        char buffer[2];
+        if( value ) {
+            buffer[0] = '1';
+        } else {
+            buffer[0] = '0';
+        }
+        buffer[1] = 0;          // Unused, but provides null termination if debugging
+        const size_t count = ::write( m_fd, buffer, 1 );
+        if( count < 1 ) {
+            return setStatus( STATUS_ERROR_FILE_WRITE );
+        }
+        return setStatus( STATUS_OK );
     }
     
 }   // namespace tfs

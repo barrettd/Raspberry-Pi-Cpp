@@ -19,6 +19,7 @@ namespace  tfs  {
             case STATUS_OK:               std::cerr << " ok\n";                break;
             case STATUS_INTERNAL_BAD_ARG: std::cerr << " error: internal\n";   break;
             case STATUS_ERROR_FILE_OPEN:  std::cerr << " error: file open\n";  break;
+            case STATUS_ERROR_FILE_SEEK:  std::cerr << " error: file seek\n";  break;
             case STATUS_ERROR_FILE_WRITE: std::cerr << " error: file write\n"; break;
             case STATUS_ERROR_FILE_READ:  std::cerr << " error: file read\n";
         }

@@ -109,6 +109,7 @@ namespace  tfs {
         STATUS_OK = 0,              // Everything is awesome...
         STATUS_INTERNAL_BAD_ARG,    // This should not happen. Internal programming error.
         STATUS_ERROR_FILE_OPEN,     // Error opening a sysfs file. e.g. "/sys/class/gpio/export". Maybe permissions? sudo ...
+        STATUS_ERROR_FILE_SEEK,     // Error positioning the value file.
         STATUS_ERROR_FILE_WRITE,    // Error writing to a sysfs file after opening.
         STATUS_ERROR_FILE_READ,     // Error reading from a sysfs file after opening.
     };
@@ -117,10 +118,13 @@ namespace  tfs {
     protected:
         GPIO_ID     m_id;           // Broadcom GPIO logical id.
         STATUS      m_status;       // Status from the last operation.
-        std::string m_value_path;   // Cached Linux sysfs path for reading / writing GPIO values for this object.
+        int         m_fd;           // File descriptor for get/set value
         
     protected:
         bool setStatus( STATUS status );        // Set the status and return: status == STATUS_OK
+        
+        bool open( const int direction );
+        void close( void );         // Close m_fd
         
         bool write( const char *path, const std::string &message ); // Write a string.
         bool write( const char *path, const bool value );           // Write a boolean.
@@ -133,13 +137,13 @@ namespace  tfs {
         bool writeDirection( bool  input );     // Set the I/O direction: true (1) for input, false (0) for output
         bool readDirction(   bool &input );     // Get the I/O direction: true (1) for input, false (0) for output
         
-        bool writeValue( bool  value );         // Write a boolean. Returns true for success, false for failure.
-        bool readValue(  bool &value );         // Read a boolean.  Returns true for success, false for failure.
-        
     public:
                  Gpio( GPIO_ID id );            // Constructor
         virtual ~Gpio( void );                  // Destructor (no need to call directly.)
         
+        GPIO_ID getId( void ) const;
+        int     getFileDescriptor( void ) const;
+
         bool     setResistor( RESISTOR value ); // Set the resistor pull-up/down state
         RESISTOR getResistor( void );           // Get the resistor pull-up/down state
     
