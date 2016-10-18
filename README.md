@@ -38,6 +38,8 @@ The test application exits after 10 seconds has elapsed.
 Remember that the GPIO pins can be harmed by voltages higher than 3.3V or by excessive currents.
 A good value for the LED current limiting resistor may be around 330Ω and the pull-up resistor on the button may be about 10KΩ.
 
+
+
 See our friends at Adafruit for detailed example of how to connect LEDs to Pi GPIO Pins: 
 https://learn.adafruit.com/raspberry-pi-e-mail-notifier-using-leds/wire-leds
 
