@@ -1,5 +1,5 @@
 # Raspberry-Pi-Cpp
-pi_lib version 1.10 - 18 Oct 2016 Added edge detection and blocking read.  
+pi_lib version 1.10 - 18 Oct 2016 Added edge detection and blocking GPIO read.  
 
 pi_lib version 1.00 - 16 Oct 2016 Initial release.  
 
