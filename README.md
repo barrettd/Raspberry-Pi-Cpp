@@ -1,5 +1,8 @@
 # Raspberry-Pi-Cpp
-pi_lib version 1.10 - Initial release.  18 Oct 2016
+pi_lib version 1.10 - 18 Oct 2016 Added edge detection and blocking read.  
+
+pi_lib version 1.00 - 16 Oct 2016 Initial release.  
+
 
 pi_lib is a little C++ library for the Raspberry Pi running Debian Raspbian Jessie (2016-09-23-raspbian-jessie.)
 
