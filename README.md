@@ -38,7 +38,7 @@ The test application exits after 10 seconds has elapsed.
 Remember that the GPIO pins can be harmed by voltages higher than 3.3V or by excessive currents.
 A good value for the LED current limiting resistor may be around 330Ω and the pull-up resistor on the button may be about 10KΩ.
 
-![GpioTest wiring](Raspberry-Pi-Cpp/images/breadboard.png)
+![Wiring for Gpiotest](https://github.com/barrettd/Raspberry-Pi-Cpp/blob/master/images/breadboard.png)
 
 Thanks to the [Fritzing](http://fritzing.org/home/) for a great open source ECAD project. 
 
