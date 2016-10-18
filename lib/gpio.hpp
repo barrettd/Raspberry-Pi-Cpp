@@ -105,8 +105,16 @@ namespace  tfs {
         RESISTOR_PULL_DOWN
     };
     
+    enum EDGE {
+        EDGE_NONE = 0,
+        EDGE_RISING,
+        EDGE_FALLING,
+        EDGE_BOTH
+    };
+    
     enum STATUS {
         STATUS_OK = 0,              // Everything is awesome...
+        STATUS_TIMEOUT,             // This may be ok, depending on the context.
         STATUS_INTERNAL_BAD_ARG,    // This should not happen. Internal programming error.
         STATUS_ERROR_FILE_OPEN,     // Error opening a sysfs file. e.g. "/sys/class/gpio/export". Maybe permissions? sudo ...
         STATUS_ERROR_FILE_SEEK,     // Error positioning the value file.
@@ -118,21 +126,21 @@ namespace  tfs {
     protected:
         GPIO_ID     m_id;           // Broadcom GPIO logical id.
         STATUS      m_status;       // Status from the last operation.
-        int         m_fd;           // File descriptor for get/set value
+        int         m_fd;           // File descriptor used to get/set pin value
         
     protected:
         bool setStatus( STATUS status );        // Set the status and return: status == STATUS_OK
         
-        bool open( const int direction );
-        void close( void );         // Close m_fd
+        bool open( const int direction );       // Open  m_fd for read or write.
+        void close( void );                     // Close m_fd
         
         bool write( const char *path, const std::string &message ); // Write a string.
         bool write( const char *path, const bool value );           // Write a boolean.
         bool read(  const char *path, std::string &value );         // Read a string.
         bool read(  const char *path, bool &value );                // Read a boolean.
         
-        bool writeExport(   void );             // "Open" the GPIO pin.
-        bool writeUnexport( void );             // "Close" the GPIO pin.
+        bool writeExport(   void );             // Publish,  or "Open"  the GPIO pin.
+        bool writeUnexport( void );             // Withdraw, or "Close" the GPIO pin.
         
         bool writeDirection( bool  input );     // Set the I/O direction: true (1) for input, false (0) for output
         bool readDirction(   bool &input );     // Get the I/O direction: true (1) for input, false (0) for output
@@ -156,7 +164,11 @@ namespace  tfs {
     public:
         GpioInput( GPIO_ID id );                // Constructor
         
+        bool setEdge( const EDGE  edge );       // Used with read_wait()
+        bool getEdge(       EDGE &edge );
+        
         bool read( bool &value );               // Read a boolean. Returns true for success, false for failure.
+        bool read_wait( bool &value, long seconds, long milliseconds = 0 ); // Blocking read
     };
     
     class GpioOutput : public Gpio {            // Output GPIO object

@@ -272,6 +272,60 @@ namespace  tfs {
     }
     
     bool
+    GpioInput::setEdge( const EDGE edge ) {
+        // ---------------------------------------------------------------------------
+        // Set the edge trigger.
+        // Returns true for success, false for failure.
+        // ---------------------------------------------------------------------------
+        std::string message;
+        switch( edge ) {
+            case EDGE_NONE:     message = "none";    break;
+            case EDGE_RISING:   message = "rising";  break;
+            case EDGE_FALLING:  message = "falling"; break;
+            case EDGE_BOTH:     message = "both";
+
+        }
+        std::stringstream path;
+        path << "/sys/class/gpio/gpio" << m_id << "/edge";
+        return write( path.str().c_str(), message );
+    }
+    
+    bool
+    GpioInput::getEdge( EDGE &edge ) {
+        // ---------------------------------------------------------------------------
+        // Get the edge trigger.
+        // Returns true for success, false for failure.
+        // ---------------------------------------------------------------------------
+        std::string contents;
+        std::stringstream path;
+        path << "/sys/class/gpio/gpio" << m_id << "/edge";
+        if( !Gpio::read( path.str().c_str(), contents )) {
+            return false;
+        }
+        if( contents.empty()) {
+            return setStatus( STATUS_ERROR_FILE_READ );
+        }
+        if( contents.compare( "none" ) == 0 ) {
+            edge = EDGE_NONE;
+            return setStatus( STATUS_OK );
+        }
+        if( contents.compare( "rising" ) == 0 ) {
+            edge = EDGE_RISING;
+            return setStatus( STATUS_OK );
+        }
+        if( contents.compare( "falling" ) == 0 ) {
+            edge = EDGE_FALLING;
+            return setStatus( STATUS_OK );
+        }
+        if( contents.compare( "both" ) == 0 ) {
+            edge = EDGE_BOTH;
+            return setStatus( STATUS_OK );
+        }
+        return setStatus( STATUS_ERROR_FILE_READ );
+    }
+
+    
+    bool
     GpioInput::read( bool &value ) {
         // ---------------------------------------------------------------------------
         // Read a boolean from the GPIO pin.
@@ -293,6 +347,39 @@ namespace  tfs {
         }
         value = buffer[0] == '1';
         return setStatus( STATUS_OK );
+    }
+    
+    bool
+    GpioInput::read_wait( bool &value, long seconds, long milliseconds ) {
+        // ---------------------------------------------------------------------------
+        // This is used in conjunction with the signal edge to trigger an interrupt.
+        // ---------------------------------------------------------------------------
+        if( seconds < 0 ) {
+            seconds = 0;
+        }
+        if( milliseconds < 0 ) {
+            milliseconds = 0;
+        }
+        if( seconds == 0 && milliseconds == 0 ) {
+            return read( value );
+        }
+        // -------------------------------------------------------------------------
+        // Standard UNIX select( ... ) setup:
+        // -------------------------------------------------------------------------
+        fd_set file_set;                    // Set of bits that describe file descriptors.
+        FD_ZERO( &file_set );               // Clear all of the bits in read_set.
+        FD_SET( m_fd, &file_set );          // Turn on the bit for our file descriptor.
+        struct timeval wait_time;           // Time interval structure.
+        wait_time.tv_sec  = seconds;        // Set our wait time.
+        wait_time.tv_usec = milliseconds;   // Set milliseconds (if any)
+        const int rc = select( m_fd+1, 0, 0, &file_set, &wait_time );
+        if( rc == 0 ) {
+            return setStatus( STATUS_TIMEOUT );     // OK to try again
+        }
+        if( rc < 0 ) {
+            return setStatus( STATUS_ERROR_FILE_READ );
+        }
+        return read( value );
     }
 
     

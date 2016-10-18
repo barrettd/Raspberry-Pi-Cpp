@@ -17,6 +17,7 @@ namespace  tfs  {
         std::cerr << label;
         switch( pin.getStatus()) {
             case STATUS_OK:               std::cerr << " ok\n";                break;
+            case STATUS_TIMEOUT:          std::cerr << " time out\n";          break;
             case STATUS_INTERNAL_BAD_ARG: std::cerr << " error: internal\n";   break;
             case STATUS_ERROR_FILE_OPEN:  std::cerr << " error: file open\n";  break;
             case STATUS_ERROR_FILE_SEEK:  std::cerr << " error: file seek\n";  break;
