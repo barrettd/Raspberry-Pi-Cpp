@@ -30,10 +30,16 @@ Then to run the test app:
 1. cd ../build
 2. sudo bin/GpioTest
 
-The test application, GpioTest, sets up an input GPIO object for GPIO_04 (a button) and an output GPIO object for GPIO_14 (a LED.)
-The application loops for 10 seconds reading the state from the button and writing state to the LED.  
-Given the proper circuit protection, you should be able to put this together on a proto board and watch the LED respond to your button press.
-The test application exits after 10 seconds has elapsed.
+The test application, GpioTest, sets up two GPIO pins.  
+
+One pin, GPIO_04, is configured as an input to sense a momentary button.  
+
+The other pin, GPIO_14, is configured as an output to drive a LED.
+
+The first test loops for 10 seconds, reading the button state and then sending that state to the LED.
+
+The second test also runs for 10 seconds, but this time the GPIO_04 line is configured to trigger on a rising edge signal.  
+We perform a blocking read on the input pin.  When the edge is detected, we toggle the LED state.
 
 Remember that the GPIO pins can be harmed by voltages higher than 3.3V or by excessive currents.
 A good value for the LED current limiting resistor may be around 330Ω and the pull-up resistor on the button may be about 10KΩ.
